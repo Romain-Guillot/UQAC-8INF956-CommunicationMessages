@@ -22,7 +22,7 @@ namespace LogEmitter
         {
             var body = Encoding.UTF8.GetBytes(message);
             _channel.BasicPublish(exchange: "logs",
-                                  routingKey: "",
+                                  routingKey: severity.Value,
                                   basicProperties: null,
                                   body: body);
         }

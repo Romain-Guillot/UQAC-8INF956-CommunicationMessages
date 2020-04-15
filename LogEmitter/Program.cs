@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace LogEmitter
 {
+    // Simple program with an infinite loop to send random log
     class Program
     {
         private static Random _random = new Random();
@@ -16,7 +17,6 @@ namespace LogEmitter
             "What do you need it for?", "Shape up, or ship out!", "Do you understand?", "Would you like to have some coffee?",
             "My legs feel like noodles!", "I’m not opening the door?", "Your biggest enemy is yourself.", "I can't wait to eat dinner!"
         };
-        private static  Array _severities = Enum.GetValues(typeof(LogSeverity));
         
         private static void Main(string[] args)
         {
@@ -24,19 +24,21 @@ namespace LogEmitter
             logger.Init();
 
             Console.CancelKeyPress += (_, __) => logger.Close(); // just to catch CTRL-C to close our logger
-
+            
+            Console.WriteLine("CTRL-C to exit");
             while (true)
             {
                 var severity = RandomLogSeverity();
                 var message = RandomMessage();
-                logger.Log(message, severity = severity);
+                logger.Log(message, severity);
                 Thread.Sleep(2000);
             }
         }
 
         private static LogSeverity RandomLogSeverity()
         {
-            return (LogSeverity) _severities.GetValue(_random.Next(_severities.Length));
+            var severities = LogSeverity.Values();
+            return (LogSeverity)  severities.GetValue(_random.Next(severities.Length));
         }
 
         private static string RandomMessage()
