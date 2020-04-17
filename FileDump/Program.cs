@@ -29,7 +29,12 @@ namespace FileDump
                 {
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
-                    w.WriteLine($"[{DateTime.Now:dd-MM-yyyy H:mm:ss}][{ea.RoutingKey.ToUpper()}]: {message}");
+                    if (!ea.RoutingKey.Contains("info"))
+                    {
+
+                        w.WriteLine($"[{DateTime.Now:dd-MM-yyyy H:mm:ss}][{ea.RoutingKey.ToUpper()}]: {message}");
+
+                    }
                 };
                 channel.BasicConsume(queue: queueName,
                     autoAck: true,
