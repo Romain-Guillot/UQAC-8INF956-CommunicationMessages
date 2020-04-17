@@ -20,7 +20,13 @@ namespace FileDump
                 var queueName = channel.QueueDeclare().QueueName;
                 channel.QueueBind(queue: queueName,
                     exchange: "logs",
-                    routingKey: "");
+                    routingKey: "warning");
+                channel.QueueBind(queue: queueName,
+                    exchange: "logs",
+                    routingKey: "error");
+                channel.QueueBind(queue: queueName,
+                    exchange: "logs",
+                    routingKey: "critical");
 
                 Console.WriteLine(" [*] Waiting for logs.");
 
@@ -29,12 +35,10 @@ namespace FileDump
                 {
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
-                    if (!ea.RoutingKey.Contains("info"))
-                    {
 
-                        w.WriteLine($"[{DateTime.Now:dd-MM-yyyy H:mm:ss}][{ea.RoutingKey.ToUpper()}]: {message}");
+                       w.WriteLine($"[{DateTime.Now:dd-MM-yyyy H:mm:ss}][{ea.RoutingKey.ToUpper()}]: {message}");
 
-                    }
+                    
                 };
                 channel.BasicConsume(queue: queueName,
                     autoAck: true,
