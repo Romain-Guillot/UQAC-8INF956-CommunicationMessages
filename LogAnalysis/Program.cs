@@ -9,12 +9,14 @@ namespace LogAnalysis
 {
     class Program
     {
-        static Dictionary<LogSeverity, int> logAnalysis = new Dictionary<LogSeverity, int> {
+        private static readonly Dictionary<LogSeverity, int> LogAnalysis = new Dictionary<LogSeverity, int> {
             { LogSeverity.Info, 0 },
             { LogSeverity.Warning, 0 },
             { LogSeverity.Error, 0 },
             { LogSeverity.Critical, 0 },
         };
+        private const int RefreshRate = 1000;  // 1sec
+
         static void Main(string[] args)
         {
             ILogReceiver receiver = new RabbitMQReceiver();
@@ -23,11 +25,9 @@ namespace LogAnalysis
             {
                 receiver.BindRoute(severity);
             }
-            
             receiver.Listen((severity, message) => {
-                logAnalysis[severity]++;
+                LogAnalysis[severity]++;
             });
-            
             new Task(WriteLogStats).Start();
             
             Console.ReadKey();
@@ -39,12 +39,12 @@ namespace LogAnalysis
             while (true)
             {
                 Console.Clear();
-                foreach (var (severity, counter) in logAnalysis)
+                foreach (var (severity, counter) in LogAnalysis)
                 {
                     Console.WriteLine($"{severity.Value} : {counter} logs");
                 }
                 Console.WriteLine("Press any key to exit.");
-                Thread.Sleep(1000);
+                Thread.Sleep(RefreshRate);
             }
         }
     }
