@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Text;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+using LogEmitter;
+using LogReceiver;
 
 namespace FileDump
 {
@@ -10,42 +9,21 @@ namespace FileDump
     {
         static void Main(string[] args)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using(var connection = factory.CreateConnection())
-            using(var channel = connection.CreateModel())
             using (var w = File.AppendText("application.log"))
             {
-                channel.ExchangeDeclare(exchange: "logs", type: ExchangeType.Fanout);
-
-                var queueName = channel.QueueDeclare().QueueName;
-                channel.QueueBind(queue: queueName,
-                    exchange: "logs",
-                    routingKey: "warning");
-                channel.QueueBind(queue: queueName,
-                    exchange: "logs",
-                    routingKey: "error");
-                channel.QueueBind(queue: queueName,
-                    exchange: "logs",
-                    routingKey: "critical");
-
-                Console.WriteLine(" [*] Waiting for logs.");
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                ILogReceiver receiver = new RabbitMQReceiver();
+                receiver.Init();
+                var severities = new[] {LogSeverity.Warning, LogSeverity.Error, LogSeverity.Critical};
+                foreach (var severity in severities)
                 {
-                    var body = ea.Body;
-                    var message = Encoding.UTF8.GetString(body);
-
-                       w.WriteLine($"[{DateTime.Now:dd-MM-yyyy H:mm:ss}][{ea.RoutingKey.ToUpper()}]: {message}");
-
-                    
-                };
-                channel.BasicConsume(queue: queueName,
-                    autoAck: true,
-                    consumer: consumer);
-
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
+                    receiver.BindRoute(severity);
+                }
+                receiver.Listen((severity, message) => {
+                    w.WriteLine($"[{DateTime.Now:dd-MM-yyyy H:mm:ss}][{severity.Value.ToUpper()}]: {message}");
+                });
+                Console.WriteLine("Press any key to exit.");
+                Console.ReadKey();
+                receiver.Close();
             }
         }
     }

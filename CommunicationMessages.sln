@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogEmitter", "LogEmitter\Lo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDump", "FileDump\FileDump.csproj", "{1A89E90C-BCFC-4391-A431-5759018ECC6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogReceiver", "LogReceiver\LogReceiver.csproj", "{8BA0564A-BB48-46F2-9D22-9BBDB77DDAD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{1A89E90C-BCFC-4391-A431-5759018ECC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A89E90C-BCFC-4391-A431-5759018ECC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A89E90C-BCFC-4391-A431-5759018ECC6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BA0564A-BB48-46F2-9D22-9BBDB77DDAD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA0564A-BB48-46F2-9D22-9BBDB77DDAD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA0564A-BB48-46F2-9D22-9BBDB77DDAD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA0564A-BB48-46F2-9D22-9BBDB77DDAD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

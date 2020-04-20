@@ -14,7 +14,7 @@ namespace LogEmitter
             var factory = new ConnectionFactory() { HostName = "localhost" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: "logs", type: ExchangeType.Fanout);
+            _channel.ExchangeDeclare(exchange: "logs", type: "direct");
             Console.WriteLine("RabbitMQ logger initialized");
         }
 
@@ -29,8 +29,8 @@ namespace LogEmitter
 
         public void Close()
         {
-            _connection.Close();
             _channel.Close();
+            _connection.Close();
             Console.WriteLine("RabbitMQ logger closed");
         }
     }

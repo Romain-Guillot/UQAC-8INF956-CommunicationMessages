@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LogEmitter
 {
@@ -22,17 +23,20 @@ namespace LogEmitter
         {
             ILogger logger = new RabbitLogger();
             logger.Init();
-
-            Console.CancelKeyPress += (_, __) => logger.Close(); // just to catch CTRL-C to close our logger
             
-            Console.WriteLine("CTRL-C to exit");
-            while (true)
-            {
-                var severity = RandomLogSeverity();
-                var message = RandomMessage();
-                logger.Log(message, severity);
-                Thread.Sleep(2000);
-            }
+            new Task(() => { // send random log every 2 sec
+                while (true)
+                {
+                    var severity = RandomLogSeverity();
+                    var message = RandomMessage();
+                    logger.Log(message, severity);
+                    Thread.Sleep(2000);
+                }
+            }).Start();
+            
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
+            logger.Close();
         }
 
         private static LogSeverity RandomLogSeverity()
